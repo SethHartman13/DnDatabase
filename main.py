@@ -6,7 +6,7 @@ import create_tables
 # Constants used to log into the MySql Server
 HOST = "localhost"
 USERNAME = "root"
-PASSWORD = "Keep0nL0vingK1m**" # HIDE THIS!
+PASSWORD = "------" # HIDE THIS!
 DATABASE = "test_database"
 
 
