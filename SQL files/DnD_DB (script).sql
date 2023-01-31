@@ -11,8 +11,24 @@ SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,N
 -- -----------------------------------------------------
 -- Schema DnD_DB
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `DnD_DB` DEFAULT CHARACTER SET utf8mb4 ;
+CREATE SCHEMA IF NOT EXISTS `DnD_DB` DEFAULT CHARACTER SET utf8 ;
 USE `DnD_DB` ;
+
+-- -----------------------------------------------------
+-- Table `DnD_DB`.`ability_score`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `DnD_DB`.`ability_score` (
+  `ability_score_id` INT NOT NULL AUTO_INCREMENT,
+  `str_score` TINYINT NOT NULL,
+  `dex_score` TINYINT NOT NULL,
+  `con_score` TINYINT NOT NULL,
+  `int_score` TINYINT NOT NULL,
+  `wis_score` TINYINT NOT NULL,
+  `chr_score` TINYINT NOT NULL,
+  PRIMARY KEY (`ability_score_id`),
+  UNIQUE INDEX `ability_scores_id_UNIQUE` (`ability_score_id` ASC) VISIBLE)
+ENGINE = InnoDB;
+
 
 -- -----------------------------------------------------
 -- Table `DnD_DB`.`monster`
@@ -20,11 +36,18 @@ USE `DnD_DB` ;
 CREATE TABLE IF NOT EXISTS `DnD_DB`.`monster` (
   `monster_id` INT NOT NULL AUTO_INCREMENT,
   `monster_name` VARCHAR(30) NOT NULL,
+  `ability_score_id` INT NOT NULL,
   `monster_AC` TINYINT NOT NULL,
   `monster_HP` SMALLINT NOT NULL,
   `monster_description` VARCHAR(8000) NULL,
   PRIMARY KEY (`monster_id`),
-  UNIQUE INDEX `monster_id_UNIQUE` (`monster_id` ASC) VISIBLE)
+  UNIQUE INDEX `monster_id_UNIQUE` (`monster_id` ASC) VISIBLE,
+  INDEX `fk_monster_ability_score1_idx` (`ability_score_id` ASC) VISIBLE,
+  CONSTRAINT `fk_monster_ability_score1`
+    FOREIGN KEY (`ability_score_id`)
+    REFERENCES `DnD_DB`.`ability_score` (`ability_score_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
@@ -81,21 +104,19 @@ CREATE TABLE IF NOT EXISTS `DnD_DB`.`player_character` (
   `player_character_id` INT NOT NULL AUTO_INCREMENT,
   `player_id` INT NOT NULL,
   `creature_type_id` INT NOT NULL,
+  `ability_score_id` INT NOT NULL,
   `character_fname` VARCHAR(45) NULL,
   `character_lname` VARCHAR(45) NULL,
   `character_nickname` VARCHAR(45) NULL,
   `total_level` TINYINT NOT NULL,
   `AC` TINYINT NOT NULL DEFAULT 10,
   `HP` TINYINT NOT NULL,
-  `strength_score` TINYINT NOT NULL,
-  `dex_score` TINYINT NOT NULL,
-  `con_score` TINYINT NOT NULL,
-  `int_score` TINYINT NOT NULL,
-  `wis_score` TINYINT NOT NULL,
-  `chr_score` TINYINT NOT NULL,
   PRIMARY KEY (`player_character_id`),
   INDEX `fk_player_character_player1_idx` (`player_id` ASC) VISIBLE,
   INDEX `fk_player_character_creature_type1_idx` (`creature_type_id` ASC) VISIBLE,
+  INDEX `fk_player_character_ability_score1_idx` (`ability_score_id` ASC) VISIBLE,
+  UNIQUE INDEX `ability_score_id_UNIQUE` (`ability_score_id` ASC) VISIBLE,
+  UNIQUE INDEX `player_id_UNIQUE` (`player_id` ASC) VISIBLE,
   CONSTRAINT `fk_player_character_player1`
     FOREIGN KEY (`player_id`)
     REFERENCES `DnD_DB`.`player` (`player_id`)
@@ -104,6 +125,11 @@ CREATE TABLE IF NOT EXISTS `DnD_DB`.`player_character` (
   CONSTRAINT `fk_player_character_creature_type1`
     FOREIGN KEY (`creature_type_id`)
     REFERENCES `DnD_DB`.`creature_type` (`creature_type_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_player_character_ability_score1`
+    FOREIGN KEY (`ability_score_id`)
+    REFERENCES `DnD_DB`.`ability_score` (`ability_score_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
@@ -147,23 +173,24 @@ ENGINE = InnoDB;
 CREATE TABLE IF NOT EXISTS `DnD_DB`.`NPC` (
   `NPC_id` INT NOT NULL AUTO_INCREMENT,
   `creature_type_id` INT NOT NULL,
+  `ability_score_id` INT NOT NULL,
   `character_fname` VARCHAR(45) NULL,
   `character_lname` VARCHAR(45) NULL,
   `character_nickname` VARCHAR(45) NULL,
   `total_level` TINYINT NOT NULL,
   `AC` TINYINT NOT NULL DEFAULT 10,
   `HP` TINYINT NOT NULL,
-  `strength_score` TINYINT NOT NULL,
-  `dex_score` TINYINT NOT NULL,
-  `con_score` TINYINT NOT NULL,
-  `int_score` TINYINT NOT NULL,
-  `wis_score` TINYINT NOT NULL,
-  `chr_score` TINYINT NOT NULL,
   PRIMARY KEY (`NPC_id`),
   INDEX `fk_player_character_creature_type1_idx` (`creature_type_id` ASC) VISIBLE,
+  INDEX `fk_NPC_ability_score1_idx` (`ability_score_id` ASC) VISIBLE,
   CONSTRAINT `fk_player_character_creature_type10`
     FOREIGN KEY (`creature_type_id`)
     REFERENCES `DnD_DB`.`creature_type` (`creature_type_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_NPC_ability_score1`
+    FOREIGN KEY (`ability_score_id`)
+    REFERENCES `DnD_DB`.`ability_score` (`ability_score_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
