@@ -1,4 +1,3 @@
-from time import sleep
 import threading
 import mysql.connector.cursor_cext
 
@@ -34,7 +33,7 @@ def initial_setup(threads: list):
         thread.start()
 
 
-def ability_score(ability_score_event: threading.Event):
+def ability_score():
     """
     Creates the ability_score table by querying the server.
 
@@ -42,6 +41,7 @@ def ability_score(ability_score_event: threading.Event):
         ability_score_event (threading.Event): Event that prevents the creation of tables dependant upon the ability_score table.
     """
 
+    
     global database
     global cursor
     
@@ -60,10 +60,10 @@ def ability_score(ability_score_event: threading.Event):
     '''
 
     cursor.execute(sql_script)
-    ability_score_event.set()
+    #ability_score_event.set()
 
 
-def monster(monster_event: threading.Event, ability_score_event: threading.Event):
+def monster():
     """
     Creates the monster table by querying the server
     Args:
@@ -71,6 +71,7 @@ def monster(monster_event: threading.Event, ability_score_event: threading.Event
         ability_score_event (threading.Event): _description_
     """
     
+
     global database
     global cursor
     
@@ -93,12 +94,12 @@ def monster(monster_event: threading.Event, ability_score_event: threading.Event
     ENGINE = InnoDB;    
     '''
 
-    ability_score_event.wait()
+    #ability_score_event.wait()
     cursor.execute(sql_script)
-    monster_event.set()
+    #monster_event.set()
 
-
-def creature_type(creature_type_event: threading.Event):
+def creature_type():
+    
     global database
     global cursor
     
@@ -113,10 +114,10 @@ def creature_type(creature_type_event: threading.Event):
     """
 
     cursor.execute(sql_script)
-    creature_type_event.set()
+    #creature_type_event.set()
 
-
-def monster_has_creature_type(monster_event: threading.Event, creature_type_event: threading.Event):
+def monster_has_creature_type():
+    
     global database
     global cursor
     
@@ -140,12 +141,13 @@ def monster_has_creature_type(monster_event: threading.Event, creature_type_even
     ENGINE = InnoDB
     """
 
-    monster_event.wait()
-    creature_type_event.wait()
+    #monster_event.wait()
+    #creature_type_event.wait()
     cursor.execute(sql_script)
 
 
-def player(player_event: threading.Event):
+def player():
+    
     global database
     global cursor
     
@@ -160,10 +162,11 @@ def player(player_event: threading.Event):
     """
 
     cursor.execute(sql_script)
-    player_event.set()
+    #player_event.set()
 
 
-def player_character(player_character_event: threading.Event, player_event: threading.Event, ability_score_event: threading.Event, creature_type_event: threading.Event):
+def player_character():
+    
     global database
     global cursor
     
@@ -203,16 +206,17 @@ def player_character(player_character_event: threading.Event, player_event: thre
     ENGINE = InnoDB;
     """
 
-    player_event.wait()
-    ability_score_event.wait()
-    creature_type_event.wait()
+    #player_event.wait()
+    #ability_score_event.wait()
+    #creature_type_event.wait()
 
     cursor.execute(sql_script)
 
-    player_character_event.set()
+    #player_character_event.set()
 
 
-def char_class(class_event: threading.Event):
+def char_class():
+    
     global database
     global cursor
     
@@ -225,10 +229,10 @@ def char_class(class_event: threading.Event):
     """
 
     cursor.execute(sql_script)
-    class_event.set()
+    #class_event.set()
 
-
-def player_character_has_class(player_character_event: threading.Event, class_event: threading.Event):
+def player_character_has_class():
+    
     global database
     global cursor
     
@@ -252,13 +256,14 @@ def player_character_has_class(player_character_event: threading.Event, class_ev
     ENGINE = InnoDB;
     """
 
-    player_character_event.wait()
-    class_event.wait()
+    #player_character_event.wait()
+    #class_event.wait()
 
     cursor.execute(sql_script)
 
 
-def NPC(NPC_event: threading.Event, ability_score_event: threading.Event, creature_type_event: threading.Event):
+def NPC():
+    
     global database
     global cursor
     
@@ -289,15 +294,16 @@ def NPC(NPC_event: threading.Event, ability_score_event: threading.Event, creatu
         ENGINE = InnoDB;
     """
 
-    ability_score_event.wait()
-    creature_type_event.wait()
+    #ability_score_event.wait()
+    #creature_type_event.wait()
 
     cursor.execute(sql_script)
 
-    NPC_event.set
+    #NPC_event.set
 
 
-def NPC_has_class(NPC_event: threading.Event, class_event: threading.Event):
+def NPC_has_class():
+    
     global database
     global cursor
     
@@ -321,13 +327,13 @@ def NPC_has_class(NPC_event: threading.Event, class_event: threading.Event):
     ENGINE = InnoDB;
     """
 
-    NPC_event.wait()
-    class_event.wait()
+    #NPC_event.wait()
+    #class_event.wait()
 
     cursor.execute(sql_script)
 
-
 def final_cleanup(threads: list):
+
     global database
     global cursor
     
@@ -350,39 +356,40 @@ def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMy
     database = database_name
     cursor = cursor_obj
 
-    # Independent thread events
-    ability_score_event = threading.Event()
-    player_event = threading.Event()
-    creature_type_event = threading.Event()
-    class_event = threading.Event()
-
-    # Dependent thread events
-    monster_event = threading.Event()
-    NPC_event = threading.Event()
-    player_character_event = threading.Event()
-
     # Thread holder
     threads = []
 
     # Independent threads
-    threads.append(ability_score(ability_score_event))
-    threads.append(creature_type(creature_type_event))
-    threads.append(player(player_event))
-    threads.append(char_class(class_event))
+    ability_thread = threading.Thread(ability_score())
+    creature_thread = threading.Thread(creature_type())
+    player_thread = threading.Thread(player())
+    class_thread = threading.Thread(char_class())
+
+    threads.append(ability_thread)
+    threads.append(creature_thread)
+    threads.append(player_thread)
+    threads.append(class_thread)
 
     # Dependent (Layer 2) threads
-    threads.append(monster(monster_event, ability_score_event))
-    threads.append(NPC(NPC_event, ability_score_event, creature_type_event))
-    threads.append(player_character(player_character_event,
-                   player_event, ability_score_event, creature_type_event))
+    monster_thread = threading.Thread(monster())
+    NPC_thread = threading.Thread(NPC())
+    player_character_thread = threading.Thread(player_character())
+
+    threads.append(monster_thread)
+    threads.append(NPC_thread)
+    threads.append(player_character_thread)
 
     # Dependent (Layer 3) threads
-    threads.append(monster_has_creature_type(
-        monster_event, creature_type_event))
-    threads.append(player_character_has_class(
-        player_character_event, class_event))
-    threads.append(NPC_has_class(NPC_event, class_event))
+    monster_has_creature_type_thread = threading.Thread(monster_has_creature_type())
+    player_character_has_class_thread = threading.Thread(player_character_has_class())
+    NPC_has_class_thread = threading.Thread(NPC_has_class())
+    
+    threads.append(monster_has_creature_type_thread)
+    threads.append(player_character_has_class_thread)
+    threads.append(NPC_has_class_thread)
 
+
+    # Starts and ends the table creation
     initial_setup(threads)
 
     final_cleanup(threads)

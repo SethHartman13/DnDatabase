@@ -10,21 +10,21 @@ try:
     
 except:
     # This information you alter yourself, or if you want create a python file named database_details and have the following variables:
-    # HOST
-    # USERNAME
-    # PASSWORD
-    # DATABASE
+    # host
+    # username
+    # password
+    # database
     
-    HOST = "localhost"
-    USERNAME = "root"
-    PASSWORD = ""
-    DATABASE = "test_database"
+    host = "localhost"
+    username = "root"
+    password = ""
+    database = "test_database"
     
 else:
-    HOST = database_details.HOST
-    USERNAME = database_details.USERNAME
-    PASSWORD = database_details.PASSWORD
-    DATABASE = database_details.DATABASE
+    host = database_details.HOST
+    username = database_details.USERNAME
+    password = database_details.PASSWORD
+    database = database_details.DATABASE
 
 
 def yes_or_no_create():
@@ -38,7 +38,7 @@ def yes_or_no_create():
         user_input (str): yes/no
     """
     while True:
-        user_input = str(input(f"\n{DATABASE} does not exist. Would you like to create a database named {DATABASE}? (yes or no) "))
+        user_input = str(input(f"\n{database} does not exist. Would you like to create a database named {database}? (yes or no) "))
         user_input.lower()
         
         if user_input != "yes" and user_input != "no":
@@ -52,26 +52,26 @@ def initialize_database():
     """
     Initializes the database
     Returns:
-        DB_OBJ (mysql.connector): Database object
-        MYCURSOR (DB_OBJ.cursor): Query tool for database object
+        db_obj (mysql.connector): Database object
+        mycursor (db_obj.cursor): Query tool for database object
     """
     
     while True:
         try:
             # Attempts to connect to the MySQL server and constructs the MYSQLCursor object
-            DB_OBJ = mysql.connector.connect(host=HOST,user=USERNAME, password=PASSWORD, database=DATABASE)
-            MYCURSOR = DB_OBJ.cursor()
+            db_obj = mysql.connector.connect(host=host,user=username, password=password, database=database)
+            mycursor = db_obj.cursor()
             
             # Error handlers
         except mysql.connector.Error as err:
             
             # Unauthorized user/incorrect password
             if err.errno == errorcode.ER_ACCESS_DENIED_ERROR:
-                sys.exit(f"Access denied, check USERNAME ({USERNAME}) and PASSWORD ({PASSWORD}) ")
+                sys.exit(f"Access denied, check username ({username}) and password ({password}) ")
                 
             # No password 
-            elif err.errno == errorcode.ER_ACCESS_DENIED_NO_PASSWORD_ERROR:
-                sys.exit(f"Access denied, have you entered a password? ")
+            #elif err.errno == errorcode.ER_ACCESS_DENIED_NO_password_ERROR:
+                #sys.exit(f"Access denied, have you entered a password? ")
                 
             # Database does not exist
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
@@ -79,17 +79,17 @@ def initialize_database():
                 
                 # If user wants to create new database with the established database name
                 if user_input:
-                    DB_OBJ = mysql.connector.connect(host=HOST,user=USERNAME, password=PASSWORD)
-                    MYCURSOR = DB_OBJ.cursor()
+                    db_obj = mysql.connector.connect(host=host,user=username, password=password)
+                    mycursor = db_obj.cursor()
                     
-                    MYCURSOR.execute(f"CREATE DATABASE {DATABASE} DEFAULT CHARACTER SET utf8mb4")
+                    mycursor.execute(f"CREATE database {database} DEFAULT CHARACTER SET utf8mb4")
                     pass
                 
                 # If user does not want to create a new database.
                 else:
                     sys.exit(f"Please enter in a valid database name ")
         else:
-            return DB_OBJ, MYCURSOR
+            return db_obj, mycursor
         
 
 
@@ -97,9 +97,8 @@ def initialize_database():
 
 # Runs program
 if __name__ == "__main__":
-    DB_OBJ, MYCURSOR = initialize_database()
-    print(type(MYCURSOR))
-    table_creation(DATABASE, MYCURSOR)
+    db_obj, mycursor = initialize_database()
+    table_creation(database, mycursor)
     
     
     
