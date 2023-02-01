@@ -4,12 +4,12 @@ import mysql.connector.cursor_cext
 cursor = mysql.connector.cursor_cext.CMySQLCursor
 database = ""
 
-def initial_setup(threads: list):
+def initial_setup():
     """
     Tells the SQL server to not do specific checks, otherwise the server will return an error.
 
     Args:
-        threads (list): list of threads
+        None
     """
 
     global database
@@ -27,11 +27,6 @@ def initial_setup(threads: list):
     # Executes the SQL scripts
     for sql_script in sql_scripts:
         cursor.execute(sql_script)
-
-    # Starts the threads
-    for thread in threads:
-        thread.start()
-
 
 def ability_score():
     """
@@ -60,7 +55,7 @@ def ability_score():
     '''
 
     cursor.execute(sql_script)
-    #ability_score_event.set()
+
 
 
 def monster():
@@ -94,9 +89,9 @@ def monster():
     ENGINE = InnoDB;    
     '''
 
-    #ability_score_event.wait()
+
     cursor.execute(sql_script)
-    #monster_event.set()
+
 
 def creature_type():
     
@@ -114,7 +109,7 @@ def creature_type():
     """
 
     cursor.execute(sql_script)
-    #creature_type_event.set()
+
 
 def monster_has_creature_type():
     
@@ -141,8 +136,7 @@ def monster_has_creature_type():
     ENGINE = InnoDB
     """
 
-    #monster_event.wait()
-    #creature_type_event.wait()
+    # Runs the SQL script
     cursor.execute(sql_script)
 
 
@@ -162,7 +156,6 @@ def player():
     """
 
     cursor.execute(sql_script)
-    #player_event.set()
 
 
 def player_character():
@@ -294,12 +287,8 @@ def NPC():
         ENGINE = InnoDB;
     """
 
-    #ability_score_event.wait()
-    #creature_type_event.wait()
-
     cursor.execute(sql_script)
 
-    #NPC_event.set
 
 
 def NPC_has_class():
@@ -327,12 +316,9 @@ def NPC_has_class():
     ENGINE = InnoDB;
     """
 
-    #NPC_event.wait()
-    #class_event.wait()
-
     cursor.execute(sql_script)
 
-def final_cleanup(threads: list):
+def final_cleanup():
 
     global database
     global cursor
@@ -341,9 +327,6 @@ def final_cleanup(threads: list):
     sql_scripts.append("SET SQL_MODE=@OLD_SQL_MODE;")
     sql_scripts.append("SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;")
     sql_scripts.append("SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;")
-
-    for thread in threads:
-        thread.join()
 
     for sql_script in sql_scripts:
         cursor.execute(sql_script)
@@ -387,9 +370,16 @@ def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMy
     threads.append(monster_has_creature_type_thread)
     threads.append(player_character_has_class_thread)
     threads.append(NPC_has_class_thread)
-
-
+    
+    
     # Starts and ends the table creation
-    initial_setup(threads)
+    initial_setup()
+    
+    for thread in threads:
+        thread.start()
+        
+    for thread in threads:
+        thread.join()
 
-    final_cleanup(threads)
+    final_cleanup()
+

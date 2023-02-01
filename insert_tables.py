@@ -34,22 +34,59 @@ def insert_player_data():
     global database
     global cursor
 
+    sql_script = """
+    INSERT INTO
+        player(player_fname, player_lname)
+    VALUES
+        ('Kimberly', 'Hartman'),
+        ('Dawson', 'Fenn'),
+        ('Kasden', 'Fenn'),
+        ('Logan', 'Peterson'),
+        ('Niagra', 'Lister');   
+    """
 
+    cursor.execute(sql_script)
+    
 
+def insert_creature_type_data():
+    global database
+    global cursor
 
+    sql_script = """
+    INSERT INTO
+        creature_type(creature_type)
+    VALUES
+        ('Sberration'),
+        ('Beast'),
+        ('Celestial'),
+        ('Construct'),
+        ('Dragon'),
+        ('Elemental'),
+        ('Fey'),
+        ('Fiend'),
+        ('Giant'),
+        ('Humanoid'),
+        ('Monstrosity'),
+        ('Ooze'),
+        ('Plant'),
+        ('Undead');    
+    """
 
+    cursor.execute(sql_script)
 
+def insert_ability_score_data():
+    global database
+    global cursor
 
-
-
-
-
-
-
-
-
-
-
+    sql_script = f"""
+    INSERT INTO
+        ability_score(str_score, dex_score, con_score, int_score, wis_score, chr_score)
+    
+    
+    
+    
+    
+    """
 
 
 
