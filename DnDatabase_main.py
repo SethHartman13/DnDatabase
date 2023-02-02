@@ -2,6 +2,7 @@ import mysql.connector
 from mysql.connector import errorcode
 import sys
 from create_tables import table_creation
+from insert_tables import table_insert
 
 # This is to protect details that I use to access my personal MySQL server
 # database_details.py is under .gitignore
@@ -60,6 +61,7 @@ def initialize_database():
         try:
             # Attempts to connect to the MySQL server and constructs the MYSQLCursor object
             db_obj = mysql.connector.connect(host=host,user=username, password=password, database=database)
+            db_obj.autocommit = True
             mycursor = db_obj.cursor()
             
             # Error handlers
@@ -70,8 +72,8 @@ def initialize_database():
                 sys.exit(f"Access denied, check username ({username}) and password ({password}) ")
                 
             # No password 
-            #elif err.errno == errorcode.ER_ACCESS_DENIED_NO_password_ERROR:
-                #sys.exit(f"Access denied, have you entered a password? ")
+            elif err.errno == errorcode.ER_ACCESS_DENIED_NO_PASSWORD_ERROR:
+                sys.exit(f"Access denied, have you entered a password? ")
                 
             # Database does not exist
             elif err.errno == errorcode.ER_BAD_DB_ERROR:
@@ -80,6 +82,7 @@ def initialize_database():
                 # If user wants to create new database with the established database name
                 if user_input:
                     db_obj = mysql.connector.connect(host=host,user=username, password=password)
+                    db_obj.autocommit = True
                     mycursor = db_obj.cursor()
                     
                     mycursor.execute(f"CREATE database {database} DEFAULT CHARACTER SET utf8mb4")
@@ -99,18 +102,5 @@ def initialize_database():
 if __name__ == "__main__":
     db_obj, mycursor = initialize_database()
     table_creation(database, mycursor)
-    
-    
-    
-    
-    
-"""
-myCURSOR = mydb.CURSOR()
-
-myCURSOR.execute("SELECT * FROM Country")
-
-myresult = myCURSOR.fetchall()
-
-for x in myresult:
-    print(x)
-    """
+        
+    table_insert(db_obj, mycursor, database)

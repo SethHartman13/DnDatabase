@@ -1,1 +1,7 @@
 database_details.py
+/SQL_files/table_notes/
+
+*.pyo
+*.pyc
+__pycache__/create_tables.cpython-311.pyc
+__pycache__/database_details.cpython-311.pyc

@@ -76,7 +76,7 @@ def monster():
         `monster_name` VARCHAR(30) NOT NULL,
         `ability_score_id` INT NOT NULL,
         `monster_AC` TINYINT NOT NULL,
-        `monster_HP` SMALLINT NOT NULL,
+        `monster_HP` INT NOT NULL,
         `monster_description` VARCHAR(8000) NULL,
         PRIMARY KEY (`monster_id`),
         UNIQUE INDEX `monster_id_UNIQUE` (`monster_id` ASC) VISIBLE,
@@ -174,7 +174,7 @@ def player_character():
         `character_nickname` VARCHAR(45) NULL,
         `total_level` TINYINT NOT NULL,
         `AC` TINYINT NOT NULL DEFAULT 10,
-        `HP` TINYINT NOT NULL,
+        `HP` INT NOT NULL,
         PRIMARY KEY (`player_character_id`),
         INDEX `fk_player_character_player1_idx` (`player_id` ASC) VISIBLE,
         INDEX `fk_player_character_creature_type1_idx` (`creature_type_id` ASC) VISIBLE,
@@ -270,7 +270,7 @@ def NPC():
         `character_nickname` VARCHAR(45) NULL,
         `total_level` TINYINT NOT NULL,
         `AC` TINYINT NOT NULL DEFAULT 10,
-        `HP` TINYINT NOT NULL,
+        `HP` INT NOT NULL,
         PRIMARY KEY (`NPC_id`),
         INDEX `fk_player_character_creature_type1_idx` (`creature_type_id` ASC) VISIBLE,
         INDEX `fk_NPC_ability_score1_idx` (`ability_score_id` ASC) VISIBLE,
@@ -336,13 +336,15 @@ def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMy
     global database
     global cursor
     
+    print("Starting table creation")
+    
     database = database_name
     cursor = cursor_obj
 
     # Thread holder
     threads = []
 
-    # Independent threads
+    # Independent tables
     ability_thread = threading.Thread(ability_score())
     creature_thread = threading.Thread(creature_type())
     player_thread = threading.Thread(player())
@@ -353,7 +355,7 @@ def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMy
     threads.append(player_thread)
     threads.append(class_thread)
 
-    # Dependent (Layer 2) threads
+    # Dependent (Layer 2) tables
     monster_thread = threading.Thread(monster())
     NPC_thread = threading.Thread(NPC())
     player_character_thread = threading.Thread(player_character())
@@ -362,7 +364,7 @@ def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMy
     threads.append(NPC_thread)
     threads.append(player_character_thread)
 
-    # Dependent (Layer 3) threads
+    # Dependent (Layer 3) tables
     monster_has_creature_type_thread = threading.Thread(monster_has_creature_type())
     player_character_has_class_thread = threading.Thread(player_character_has_class())
     NPC_has_class_thread = threading.Thread(NPC_has_class())
@@ -382,4 +384,8 @@ def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMy
         thread.join()
 
     final_cleanup()
+    
+    print("Finishing table creation")
 
+if __name__ == "__main__":
+    assert False, f"create_tables.py is not a program, you should instead run DnDatabase_main.py."
