@@ -1,12 +1,9 @@
 import threading
 import mysql.connector.cursor_cext
 import mysql.connector.connection_cext
-from time import sleep
-from random import uniform
 
 cursor = mysql.connector.cursor_cext.CMySQLCursor
 database = mysql.connector.connection_cext.CMySQLConnection
-wait_times = [float(.2), float(.5)]
 database_str = ""
 
 def initial_setup():
@@ -17,7 +14,6 @@ def initial_setup():
         None
     """
 
-    global database
     global cursor
 
     sql_scripts = []
@@ -35,11 +31,13 @@ def initial_setup():
 
 
 def class_data():
-    global wait_times
-    global database
-    global cursor
+    """
+    Inserts class data into the class table
 
-    sleep(uniform(wait_times[0],wait_times[1]))
+    Args:
+        None    
+    """
+    global cursor
 
     sql_script = """
     INSERT INTO
@@ -61,14 +59,15 @@ def class_data():
     """
 
     cursor.execute(sql_script)
-    database.commit()
 
 def player_data():
-    global wait_times
-    global database
-    global cursor
+    """
+    Inserts player data into the player table
 
-    sleep(uniform(wait_times[0],wait_times[1]))
+    Args:
+        None    
+    """
+    global cursor
 
     sql_script = """
     INSERT INTO
@@ -84,11 +83,13 @@ def player_data():
     cursor.execute(sql_script)
 
 def creature_type_data():
-    global wait_times
-    global database
-    global cursor
+    """
+    Inserts creature type data into the creature_type table
 
-    sleep(uniform(wait_times[0],wait_times[1]))
+    Args:
+        None    
+    """
+    global cursor
 
     sql_script = """
     INSERT INTO
@@ -113,11 +114,14 @@ def creature_type_data():
     cursor.execute(sql_script)
 
 def ability_score_data():
-    global wait_times
-    global database
-    global cursor
+    """
+    Inserts ability score data into the ability_score table
 
-    sleep(uniform(wait_times[0],wait_times[1]))
+    Args:
+        None
+    
+    """
+    global cursor
 
     sql_script = """
     INSERT INTO
@@ -143,12 +147,14 @@ def ability_score_data():
     cursor.execute(sql_script)
     
 def monster_data():
-    global wait_times
-    global database
+    """
+    Inserts monster data into the monster table
+
+    Args:
+        None
+    """
     global cursor
     
-    sleep(uniform(wait_times[0],wait_times[1]))
-
     sql_script = """
     INSERT INTO
         monster(monster_name, ability_score_id, monster_AC, monster_HP, monster_description)
@@ -162,12 +168,8 @@ def monster_data():
     cursor.execute(sql_script)
 
 def monster_has_creature_type_data():
-    global wait_times
-    global database
     global cursor
     
-    sleep(uniform(wait_times[0],wait_times[1]))
-
     sql_script = """
     INSERT INTO
         monster_has_creature_type(monster_id, creature_type_id)
@@ -181,12 +183,8 @@ def monster_has_creature_type_data():
     cursor.execute(sql_script)
     
 def NPC_data():
-    global wait_times
-    global database
     global cursor
     
-    sleep(uniform(wait_times[0],wait_times[1]))
-
     sql_script = """
     INSERT INTO
         NPC(creature_type_id, ability_score_id, character_fname, character_lname, character_nickname, total_level, AC, HP)
@@ -202,12 +200,8 @@ def NPC_data():
     cursor.execute(sql_script)
 
 def player_character_data():
-    global wait_times
-    global database
     global cursor
     
-    sleep(uniform(wait_times[0],wait_times[1]))
-
     sql_script = """
     INSERT INTO
         player_character(player_id, creature_type_id, ability_score_id, character_fname, character_lname, character_nickname, total_level, AC, HP)
@@ -222,12 +216,8 @@ def player_character_data():
     cursor.execute(sql_script)
     
 def player_character_has_class_data():
-    global wait_times
-    global database
     global cursor
     
-    sleep(uniform(wait_times[0],wait_times[1]))
-
     sql_script = """
     INSERT INTO
         player_character_has_class(player_character_id, class_id)
@@ -245,12 +235,8 @@ def player_character_has_class_data():
     cursor.execute(sql_script)
     
 def NPC_has_class():
-    global wait_times
-    global database
     global cursor
     
-    sleep(uniform(wait_times[0],wait_times[1]))
-
     sql_script = """
     INSERT INTO
         NPC_has_class(NPC_id, class_id)
@@ -268,8 +254,6 @@ def NPC_has_class():
     cursor.execute(sql_script)
 
 def final_cleanup():
-
-    global database
     global cursor
     
     sql_scripts = []

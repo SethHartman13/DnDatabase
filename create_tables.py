@@ -4,6 +4,7 @@ import mysql.connector.cursor_cext
 cursor = mysql.connector.cursor_cext.CMySQLCursor
 database = ""
 
+
 def initial_setup():
     """
     Tells the SQL server to not do specific checks, otherwise the server will return an error.
@@ -11,7 +12,6 @@ def initial_setup():
     Args:
         None
     """
-
     global database
     global cursor
 
@@ -28,18 +28,17 @@ def initial_setup():
     for sql_script in sql_scripts:
         cursor.execute(sql_script)
 
+
 def ability_score():
     """
     Creates the ability_score table by querying the server.
 
     Args:
-        ability_score_event (threading.Event): Event that prevents the creation of tables dependant upon the ability_score table.
+        None
     """
-
-    
     global database
     global cursor
-    
+
     sql_script = f'''
     CREATE TABLE IF NOT EXISTS `{database}`.`ability_score` (
         `ability_score_id` INT NOT NULL AUTO_INCREMENT,
@@ -54,22 +53,20 @@ def ability_score():
     ENGINE = InnoDB;
     '''
 
+    # Executes the SQL script
     cursor.execute(sql_script)
-
 
 
 def monster():
     """
-    Creates the monster table by querying the server
-    Args:
-        monster_event (threading.Event): Event that prevents the creation of tables dependant upon the ability_score table.
-        ability_score_event (threading.Event): _description_
-    """
-    
+    Creates the monster table by querying the server.
 
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f'''
     CREATE TABLE IF NOT EXISTS `{database}`.`monster` (
         `monster_id` INT NOT NULL AUTO_INCREMENT,
@@ -89,15 +86,20 @@ def monster():
     ENGINE = InnoDB;    
     '''
 
-
+    # Executes the SQL script
     cursor.execute(sql_script)
 
 
 def creature_type():
-    
+    """
+    Creates the creature_type table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`creature_type` (
         `creature_type_id` INT NOT NULL AUTO_INCREMENT,
@@ -108,14 +110,20 @@ def creature_type():
     ENGINE = InnoDB   
     """
 
+    # Executes the SQL script
     cursor.execute(sql_script)
 
 
 def monster_has_creature_type():
-    
+    """
+    Creates the monster_has_creature_type table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`monster_has_creature_type` (
         `monster_id` INT NOT NULL,
@@ -141,10 +149,15 @@ def monster_has_creature_type():
 
 
 def player():
-    
+    """
+    Creates the player table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`player` (
         `player_id` INT NOT NULL AUTO_INCREMENT,
@@ -155,14 +168,20 @@ def player():
     ENGINE = InnoDB;
     """
 
+    # Executes the SQL script
     cursor.execute(sql_script)
 
 
 def player_character():
-    
+    """
+    Creates the player_character table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`player_character` (
         `player_character_id` INT NOT NULL AUTO_INCREMENT,
@@ -199,20 +218,20 @@ def player_character():
     ENGINE = InnoDB;
     """
 
-    #player_event.wait()
-    #ability_score_event.wait()
-    #creature_type_event.wait()
-
+    # Executes the SQL script
     cursor.execute(sql_script)
-
-    #player_character_event.set()
 
 
 def char_class():
-    
+    """
+    Creates the class table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`class` (
         `class_id` INT NOT NULL AUTO_INCREMENT,
@@ -221,14 +240,20 @@ def char_class():
     ENGINE = InnoDB;
     """
 
+    # Executes the SQL script
     cursor.execute(sql_script)
-    #class_event.set()
+
 
 def player_character_has_class():
-    
+    """
+    Creates the player_character_has_class table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`player_character_has_class` (
         `player_character_id` INT NOT NULL,
@@ -249,17 +274,20 @@ def player_character_has_class():
     ENGINE = InnoDB;
     """
 
-    #player_character_event.wait()
-    #class_event.wait()
-
+    # Executes the SQL script
     cursor.execute(sql_script)
 
 
 def NPC():
-    
+    """
+    Creates the npc table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`NPC` (
         `NPC_id` INT NOT NULL AUTO_INCREMENT,
@@ -287,15 +315,20 @@ def NPC():
         ENGINE = InnoDB;
     """
 
+    # Executes the SQL script
     cursor.execute(sql_script)
 
 
-
 def NPC_has_class():
-    
+    """
+    Creates the npc_has_class table by querying the server.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_script = f"""
     CREATE TABLE IF NOT EXISTS `{database}`.`NPC_has_class` (
         `NPC_id` INT NOT NULL,
@@ -316,28 +349,44 @@ def NPC_has_class():
     ENGINE = InnoDB;
     """
 
+    # Executes the SQL script
     cursor.execute(sql_script)
 
-def final_cleanup():
 
+def final_cleanup():
+    """
+    Tells the SQL server to do specific checks so that proper SQL Syntax rules are followed.
+
+    Args:
+        None
+    """
     global database
     global cursor
-    
+
     sql_scripts = []
     sql_scripts.append("SET SQL_MODE=@OLD_SQL_MODE;")
     sql_scripts.append("SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;")
     sql_scripts.append("SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;")
 
+    # Executes the SQL scriptS
     for sql_script in sql_scripts:
         cursor.execute(sql_script)
 
 
-def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMySQLCursor):
+def table_creation(database_name: str, cursor_obj: mysql.connector.cursor_cext.CMySQLCursor):
+    """
+    Is the primary function that creates all the tables.
+
+    Args:
+        database_name (str): Name of the database being used.
+        cursor_obj (CMySQLCursor): cursor object used to execute queries.
+    """
     global database
     global cursor
-    
+
+    # Indicator on what Python is doing.
     print("Starting table creation")
-    
+
     database = database_name
     cursor = cursor_obj
 
@@ -365,27 +414,33 @@ def table_creation(database_name:str, cursor_obj:mysql.connector.cursor_cext.CMy
     threads.append(player_character_thread)
 
     # Dependent (Layer 3) tables
-    monster_has_creature_type_thread = threading.Thread(monster_has_creature_type())
-    player_character_has_class_thread = threading.Thread(player_character_has_class())
+    monster_has_creature_type_thread = threading.Thread(
+        monster_has_creature_type())
+    player_character_has_class_thread = threading.Thread(
+        player_character_has_class())
     NPC_has_class_thread = threading.Thread(NPC_has_class())
-    
+
     threads.append(monster_has_creature_type_thread)
     threads.append(player_character_has_class_thread)
     threads.append(NPC_has_class_thread)
-    
-    
-    # Starts and ends the table creation
+
+    # Prepares for the threads to be run.
     initial_setup()
-    
+
+    # Starts and stops threads
     for thread in threads:
         thread.start()
-        
+
     for thread in threads:
         thread.join()
 
+    # Housekeeping function
     final_cleanup()
-    
+
+    # Indicator on what Python is going
     print("Finishing table creation")
 
+
+# This tells the user that they shouldn't be running this file like a program.
 if __name__ == "__main__":
     assert False, f"create_tables.py is not a program, you should instead run DnDatabase_main.py."
