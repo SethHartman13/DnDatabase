@@ -3,6 +3,9 @@ from mysql.connector import errorcode
 import sys
 from create_tables import table_creation
 from insert_tables import table_insert
+import mysql.connector.cursor_cext
+import mysql.connector.connection_cext
+from print_table import print_table_data
 
 # This is to protect details that I use to access my personal MySQL server
 # database_details.py is under .gitignore
@@ -16,10 +19,10 @@ except:
     # password
     # database
     
-    host = "localhost"
-    username = "root"
-    password = ""
-    database = "test_database"
+    host = str("localhost")
+    username = str("root")
+    password = str("")
+    database = str("test_database")
     
 else:
     host = database_details.HOST
@@ -39,7 +42,9 @@ def yes_or_no_create():
         user_input (str): yes/no
     """
     while True:
-        user_input = str(input(f"\n{database} does not exist. Would you like to create a database named {database}? (yes or no) "))
+        # debug EDIT THIS!
+        #user_input = str(input(f"\n{database} does not exist. Would you like to create a database named {database}? (yes or no) "))
+        user_input = "yes"
         user_input.lower()
         
         if user_input != "yes" and user_input != "no":
@@ -100,7 +105,16 @@ def initialize_database():
 
 # Runs program
 if __name__ == "__main__":
+    
+    # Creates Database and Cursor objects
     db_obj, mycursor = initialize_database()
+    
+    # Creates tables
     table_creation(database, mycursor)
-        
+    
+    # Inserts Initial Information
     table_insert(db_obj, mycursor, database)
+    
+    # Prints out requested criteria
+    print_table_data(mycursor, db_obj, database)
+    
