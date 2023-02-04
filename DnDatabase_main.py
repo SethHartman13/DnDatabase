@@ -19,7 +19,7 @@ import mysql.connector.connection_cext
 
 
 # This is to protect details that I use to access my personal MySQL server,
-# database_details.py is unde my .gitignore
+# database_details.py is under my .gitignore
 try:
     import database_details
 
@@ -35,9 +35,6 @@ else:
 def yes_or_no_create() -> bool:
     """
     This function handles the asking of whether or not the user wants to create a database since they entered in a non-existant database name.
-
-    Args:
-        dbname (str): Name of the database in question.
     
     Returns:
         user_input (bool): TRUE/FALSE
