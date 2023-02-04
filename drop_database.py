@@ -16,10 +16,15 @@ else:
 
 
 # Creates database and cursor object
-db_obj = mysql.connector.connect(
-    host=host, user=username, password=password, database=database)
-db_obj.autocommit = True
-mycursor = db_obj.cursor()
+try:
+    db_obj = mysql.connector.connect(
+        host=host, user=username, password=password, database=database)
+    db_obj.autocommit = True
+    mycursor = db_obj.cursor()
+except:
+    print("f{database} does not exist")
+    
+else:
 
-# Drops schema if the database/schema exists by querying the server.
-mycursor.execute(f"DROP SCHEMA IF EXISTS {database}")
+    # Drops schema by querying the server.
+    mycursor.execute(f"DROP SCHEMA {database}")
