@@ -36,6 +36,8 @@ def yes_or_no_create() -> bool:
     """
     This function handles the asking of whether or not the user wants to create a database since they entered in a non-existant database name.
     
+    Args:
+        None
     Returns:
         user_input (bool): TRUE/FALSE
     """
@@ -57,6 +59,9 @@ def yes_or_no_create() -> bool:
 def initialize_database():
     """
     Initializes the database
+    
+    Args:
+        None
     Returns:
         db_obj (mysql.connector): Database object
         mycursor (db_obj.cursor): Query tool for database object
