@@ -6,6 +6,7 @@ from insert_tables import table_insert
 import mysql.connector.cursor_cext
 import mysql.connector.connection_cext
 from print_table import print_table_data
+from update_tables import update_table_data
 
 # This is to protect details that I use to access my personal MySQL server
 # database_details.py is under .gitignore
@@ -13,12 +14,6 @@ try:
     import database_details
     
 except:
-    # This information you alter yourself, or if you want create a python file named database_details and have the following variables:
-    # host
-    # username
-    # password
-    # database
-    
     host = str("localhost")
     username = str("root")
     password = str("")
@@ -109,12 +104,17 @@ if __name__ == "__main__":
     # Creates Database and Cursor objects
     db_obj, mycursor = initialize_database()
     
-    # Creates tables
+    # Creates tables, skips if they already exist
     table_creation(database, mycursor)
     
-    # Inserts Initial Information
+    # Inserts initial information, should be commented out once completed
     table_insert(db_obj, mycursor, database)
     
     # Prints out requested criteria
     print_table_data(mycursor, db_obj, database)
     
+    # Updates requested criteria
+    update_table_data(mycursor, db_obj)
+    
+    # Prints out requested criteria
+    print_table_data(mycursor, db_obj, database)

@@ -1,4 +1,3 @@
-import threading
 import mysql.connector.cursor_cext
 import mysql.connector.connection_cext
 
@@ -119,6 +118,9 @@ def print_table_data(cursor_obj: mysql.connector.cursor_cext.CMySQLCursor, datab
         pfname, plname, cfname, clname, cnname = line
         print('{0:<20}{1:<20}{2:<20}{3:<20}{4:<20}'.format(str(pfname), str(plname), str(cfname), str(clname), str(cnname)))
     
+    
+if __name__ == "__main__":
+    assert False, f"print_tables.py is not a program, you should instead run DnDatabase_main.py."
     
         
     

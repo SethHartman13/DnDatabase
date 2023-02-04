@@ -4,12 +4,6 @@ try:
     import database_details
     
 except:
-    # This information you alter yourself, or if you want create a python file named database_details and have the following variables:
-    # host
-    # username
-    # password
-    # database
-    
     host = str("localhost")
     username = str("root")
     password = str("")
