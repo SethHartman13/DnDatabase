@@ -23,7 +23,7 @@ try:
     mycursor = db_obj.cursor()
 except:
     print("f{database} does not exist")
-    
+
 else:
 
     # Drops schema by querying the server.
