@@ -42,7 +42,3 @@ def update_table_data(cursor_obj: mysql.connector.cursor_cext.CMySQLCursor, data
 # This tells the user that they shouldn't be running this file like a program.
 if __name__ == "__main__":
     assert False, f"update_tables.py is not a program, you should instead run DnDatabase_main.py."
-
-
-if __name__ == "__main__":
-    assert False, f"update_tables.py is not a program, you should instead run DnDatabase_main.py."
