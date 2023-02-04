@@ -8,14 +8,13 @@ database_str = ""
 
 def initial_setup():
     """
-    Tells the SQL server to not do specific checks, otherwise the server will return an error.
+    Tells the SQL server to not do specific checks, otherwise the server will return an error by querying the server. This also makes the inserting of tables thread safe.
 
     Args:
         None
     """
 
-    global cursor
-
+    # SQL scripts
     sql_scripts = []
     sql_scripts.append(
         "SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;")
@@ -32,13 +31,13 @@ def initial_setup():
 
 def class_data():
     """
-    Inserts class data into the class table
+    Inserts class data into the class table by querying the server.
 
     Args:
         None    
     """
-    global cursor
 
+    # SQL Script
     sql_script = """
     INSERT INTO
         class(class_name)
@@ -58,17 +57,18 @@ def class_data():
         ('Wizard');
     """
 
+    # Executes SQL script
     cursor.execute(sql_script)
 
 def player_data():
     """
-    Inserts player data into the player table
+    Inserts player data into the player table bu querying the server.
 
     Args:
         None    
     """
-    global cursor
 
+    # SQL script
     sql_script = """
     INSERT INTO
         player(player_fname, player_lname)
@@ -80,17 +80,18 @@ def player_data():
         ('Mitch', 'Lincoln');   
     """
 
+    # Executes SQL script
     cursor.execute(sql_script)
 
 def creature_type_data():
     """
-    Inserts creature type data into the creature_type table
+    Inserts creature type data into the creature_type table by querying the server.
 
     Args:
         None    
     """
-    global cursor
 
+    # SQL script
     sql_script = """
     INSERT INTO
         creature_type(creature_type)
@@ -111,18 +112,19 @@ def creature_type_data():
         ('Undead');    
     """
 
+    # Executes SQL script
     cursor.execute(sql_script)
 
 def ability_score_data():
     """
-    Inserts ability score data into the ability_score table
+    Inserts ability score data into the ability_score table by querying the server.
 
     Args:
         None
     
     """
-    global cursor
 
+    # SQL script
     sql_script = """
     INSERT INTO
         ability_score(str_score, dex_score, con_score, int_score, wis_score, chr_score)
@@ -144,17 +146,18 @@ def ability_score_data():
         (8,20,27,18,17,20);
     """
     
+    # Executes SQL script
     cursor.execute(sql_script)
     
 def monster_data():
     """
-    Inserts monster data into the monster table
+    Inserts monster data into the monster table by querying the server.
 
     Args:
         None
     """
-    global cursor
     
+    # SQL script
     sql_script = """
     INSERT INTO
         monster(monster_name, ability_score_id, monster_AC, monster_HP, monster_description)
@@ -165,11 +168,18 @@ def monster_data():
         ('Undead Zombie (Normal)', 14, 16, 35, 'Former Humanoid turned flesh-eating Zombie');    
     """
     
+    # Executes SQL script
     cursor.execute(sql_script)
 
 def monster_has_creature_type_data():
-    global cursor
+    """
+    Inserts data into the monster_has_creature_type table by querying the server
     
+    Args:
+        None
+    """
+    
+    # SQL script
     sql_script = """
     INSERT INTO
         monster_has_creature_type(monster_id, creature_type_id)
@@ -180,11 +190,17 @@ def monster_has_creature_type_data():
         (4,14);   
     """
     
+    # Executes SQL script
     cursor.execute(sql_script)
     
 def NPC_data():
-    global cursor
-    
+    """
+    Inserts data into the NPC table by querying the server.
+
+    Args:
+        None
+    """
+    # SQL script
     sql_script = """
     INSERT INTO
         NPC(creature_type_id, ability_score_id, character_fname, character_lname, character_nickname, total_level, AC, HP)
@@ -197,11 +213,17 @@ def NPC_data():
         (5, 15, 'Taranis', NULL, 'Ral, Caller of Storms', 20, 18, 292);
     """
 
+    # Executes SQL script
     cursor.execute(sql_script)
 
 def player_character_data():
-    global cursor
-    
+    """
+    Inserts data into the player_character table by querying the server.
+
+    Args:
+        None
+    """
+    # SQL script
     sql_script = """
     INSERT INTO
         player_character(player_id, creature_type_id, ability_score_id, character_fname, character_lname, character_nickname, total_level, AC, HP)
@@ -213,11 +235,17 @@ def player_character_data():
         (5, 10, 5, 'Frank', NULL, 'Frank the Tank', 7, 17, 45);
     """
     
+    # Executes SQL script
     cursor.execute(sql_script)
     
 def player_character_has_class_data():
-    global cursor
-    
+    """
+    Inserts data into the player_character_has_class table by querying the server.
+
+    Args:
+        None
+    """
+    # SQL script
     sql_script = """
     INSERT INTO
         player_character_has_class(player_character_id, class_id)
@@ -232,11 +260,17 @@ def player_character_has_class_data():
         (5, 6);    
     """
 
+    # Executes SQL script
     cursor.execute(sql_script)
     
 def NPC_has_class():
-    global cursor
-    
+    """
+    Inserts data into the NPC_has_class table by querying the server.
+
+    Args:
+        None
+    """
+    # SQL script    
     sql_script = """
     INSERT INTO
         NPC_has_class(NPC_id, class_id)
@@ -251,16 +285,24 @@ def NPC_has_class():
         (6, 11);
     """
     
+    # Executes SQL Script
     cursor.execute(sql_script)
 
 def final_cleanup():
-    global cursor
+    """
+    Tells the SQL server to do specific checks so that proper SQL Syntax rules are followed by querying the server.
+
+    Args:
+        None
+    """
     
+    # SQL Scripts
     sql_scripts = []
     sql_scripts.append("SET SQL_MODE=@OLD_SQL_MODE;")
     sql_scripts.append("SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;")
     sql_scripts.append("SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;")
 
+    # Executes SQL scripts
     for sql_script in sql_scripts:
         cursor.execute(sql_script)
 
@@ -269,19 +311,17 @@ def table_insert(database_obj:mysql.connector.connection_cext.CMySQLConnection, 
     global cursor
     global database_str 
     
+    # Indicator on what Python is doing
+    print("Starting table insert")
+    
     database_str = database_name
     database = database_obj
     cursor = cursor_obj
     
-    print("Starting table insert")
-    
-    
-    initial_setup()
-    
-    
+    # Thread holder    
     threads = []
     
-    # Indepndent tables
+    # Primary tables
     ability_thread = threading.Thread(ability_score_data())
     creature_thread = threading.Thread(creature_type_data())
     player_thread = threading.Thread(player_data())
@@ -293,7 +333,7 @@ def table_insert(database_obj:mysql.connector.connection_cext.CMySQLConnection, 
     threads.append(class_thread)
 
     
-    # Dependent (Layer 2) tables
+    # Secondary tables
     monster_thread = threading.Thread(monster_data())
     NPC_thread = threading.Thread(NPC_data())
     player_character_thread = threading.Thread(player_character_data())
@@ -303,7 +343,7 @@ def table_insert(database_obj:mysql.connector.connection_cext.CMySQLConnection, 
     threads.append(player_character_thread)
 
 
-    # Dependent (Layer 3) tables
+    # Tertiary tables
     monster_has_creature_type_thread = threading.Thread(monster_has_creature_type_data())
     player_character_has_class_thread = threading.Thread(player_character_has_class_data())
     NPC_has_class_thread = threading.Thread(NPC_has_class())
@@ -312,15 +352,22 @@ def table_insert(database_obj:mysql.connector.connection_cext.CMySQLConnection, 
     threads.append(player_character_has_class_thread)
     threads.append(NPC_has_class_thread)
     
+    # Final preparations for the threads to be run.
+    initial_setup()
+    
+    # Starts and stops the threads
     for thread in threads:
         thread.start()
         
     for thread in threads:
         thread.join()
         
+    # Housekeeping function
     final_cleanup()
     
+    # Indicator on what Python is doing
     print("Finishing table insert")
-    
+
+# This tells the user that they shouldn't be running this file like a program.
 if __name__ == "__main__":
     assert False, f"insert_tables.py is not a program, you should instead run DnDatabase_main.py."
